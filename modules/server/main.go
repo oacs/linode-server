@@ -15,8 +15,8 @@ func HelloServer(w http.ResponseWriter, req *http.Request) {
 }
 
 func Main() {
-	http.HandleFunc("/hello", HelloServer)
-	err := http.ListenAndServeTLS(":443", "server.crt", "server.key", nil)
+	http.HandleFunc("/", HelloServer)
+	err := http.ListenAndServeTLS(":4443", "/etc/letsencrypt/live/tucos.dev/fullchain.pem", "/etc/letsencrypt/live/tucos.dev/privkey.pem", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
