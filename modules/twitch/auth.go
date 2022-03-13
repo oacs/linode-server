@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/gorilla/sessions"
-	"golang.org/x/oauth2/clientcredentials"
+	"golang.org/x/oauth2"
 )
 
 const (
@@ -18,14 +18,10 @@ var (
 	// secrets
 	cookieSecret string
 	clientID     string
-	clientSecret string // idk
+	clientSecret string
 	twitchUser   string
 
-	serverType  string // global
-	userID      string
-	baseUrl     string
 	token       string
-	Port        string
 	channelInfo ChannelInfo
 )
 
@@ -36,8 +32,17 @@ func getSecrets() {
 	twitchUser = os.Getenv("TWITCH_USER")
 }
 
+func Init() {
+	getSecrets()
+	initOAuth()
+	fetchApiToken()
+	fetchTwitchChannelInfo()
+}
+
 var (
 	// Consider storing the secret in an environment variable or a dedicated storage system.
-	oauth2Config *clientcredentials.Config
+	oauth2Config *oauth2.Config
 	cookieStore  *sessions.CookieStore
+
+	accessToken string
 )
