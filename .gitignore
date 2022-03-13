@@ -1,0 +1,3 @@
+.env
+modules/server/server.crt
+modules/server/server.key
