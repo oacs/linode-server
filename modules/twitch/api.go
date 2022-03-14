@@ -49,7 +49,7 @@ func fetchTwitchChannelInfo() (channelInfo ChannelInfo, err error) {
 	return channelArrayInfo.Data[0], nil
 }
 
-func fetchApiToken() (string, error) {
+func fetchApiToken() {
 	cookieStore = sessions.NewCookieStore([]byte(cookieSecret))
 	gob.Register(&oauth2.Token{})
 
@@ -58,7 +58,7 @@ func fetchApiToken() (string, error) {
 	// create url with query parameters
 	base, err := url.Parse(TWITCH_TOKEN_URL)
 	if err != nil {
-		return "", err
+		return
 	}
 
 	// Query params
@@ -75,7 +75,7 @@ func fetchApiToken() (string, error) {
 
 	responseData, err := apiClient.Post(base.String(), nil, headers)
 	if err != nil {
-		return "", err
+		return
 	}
 
 	log.Debug("Response body: ", string(responseData))

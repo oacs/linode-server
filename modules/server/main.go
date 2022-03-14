@@ -3,9 +3,9 @@ package server
 import (
 	// "fmt"
 	// "io"
-	"log"
 	"net/http"
 
+	log "github.com/sirupsen/logrus"
 	"example.com/m/v2/modules/twitch"
 )
 
@@ -17,6 +17,7 @@ func HelloServer(w http.ResponseWriter, req *http.Request) {
 }
 
 func Main() {
+	log.SetLevel(log.DebugLevel)
 	twitch.Init()
 	http.HandleFunc("/", HelloServer)
 

@@ -3,6 +3,7 @@ package twitch
 import (
 	"os"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
 )
@@ -30,6 +31,7 @@ func getSecrets() {
 	clientSecret = os.Getenv("TWITCH_CLIENT_SECRET")
 	cookieSecret = os.Getenv("COOKIE_SECRET")
 	twitchUser = os.Getenv("TWITCH_USER")
+	log.Debug(clientID)
 }
 
 func Init() {
