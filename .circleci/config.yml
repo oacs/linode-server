@@ -25,13 +25,15 @@ jobs:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
-      - run:
-          name: Run tests
-          command: |
-            mkdir -p /tmp/test-reports
-            gotestsum --junitfile /tmp/test-reports/unit-tests.xml
-      - store_test_results:
-          path: /tmp/test-reports
+      - add_ssh_keys 
+      - checkout
+      - run: 
+          name: Build go app
+          command: go build -o app
+      - run: ssh-keyscan -H 139.162.163.143 >> ~/.ssh/known_hosts
+      - run: 
+          name: upload app 
+          command: rsync -avce ssh --delete ./app root@139.162.163.143:/home/www
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
