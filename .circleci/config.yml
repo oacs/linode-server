@@ -28,17 +28,10 @@ jobs:
             - "/go/pkg/mod"
       - add_ssh_keys 
       - checkout
-      - run: go env GOOS GOARCH
-      - run: export GOOS=linux
-      - run: export GOARCH=amd64
-      - run: go env GOOS GOARCH
-      - run: 
-          name: Build go app
-          command:  go build -o app
       - run: ssh-keyscan -H 139.162.163.143 >> ~/.ssh/known_hosts
       - run: 
-          name: upload app 
-          command: scp ./app root@139.162.163.143:/home/www
+          name: deploy app 
+          command: ssh root@139.162.163.143 ./deploy
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
