@@ -30,7 +30,7 @@ jobs:
       - checkout
       - run: 
           name: Build go app
-          command: go build -o app
+          command: env GOOS=linux GOARCH=amd64 go build -o app
       - run: ssh-keyscan -H 139.162.163.143 >> ~/.ssh/known_hosts
       - run: 
           name: upload app 
