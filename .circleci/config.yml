@@ -28,9 +28,13 @@ jobs:
             - "/go/pkg/mod"
       - add_ssh_keys 
       - checkout
+      - run: go env GOOS GOARCH
+      - run: export GOOS=linux
+      - run: export GOARCH=amd64
+      - run: go env GOOS GOARCH
       - run: 
           name: Build go app
-          command: GOOS=linux GOARCH=amd64 go build -o app
+          command:  go build -o app
       - run: ssh-keyscan -H 139.162.163.143 >> ~/.ssh/known_hosts
       - run: 
           name: upload app 
