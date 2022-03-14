@@ -15,7 +15,7 @@ func Get(url string, headers http.Header) ([]byte, error) {
 }
 
 func Post(url string, body io.Reader, headers http.Header) ([]byte, error) {
-	return request("GET", url, headers, body)
+	return request("POST", url, headers, body)
 }
 
 func request(verbose string, url string, headers http.Header, body io.Reader) (responseData []byte, err error) {

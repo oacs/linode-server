@@ -37,8 +37,8 @@ func getSecrets() {
 func Init() {
 	getSecrets()
 	initOAuth()
-	fetchApiToken()
-	fetchTwitchChannelInfo()
+	//fetchApiToken()
+	//fetchTwitchChannelInfo()
 }
 
 var (

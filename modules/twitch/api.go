@@ -21,7 +21,7 @@ import (
 
 const TWITCH_TOKEN_URL = "https://id.twitch.tv/oauth2/token"
 const TWITCH_API_URL = "https://api.twitch.tv/helix"
-const REDIRECT_URL = "https://tucos.dev/api/twitch/oauth/callback"
+const REDIRECT_URL = "https://tucos.dev/twitch/oauth/callback"
 
 func fetchTwitchChannelInfo() (channelInfo ChannelInfo, err error) {
 	if accessToken == "" {
@@ -50,7 +50,6 @@ func fetchTwitchChannelInfo() (channelInfo ChannelInfo, err error) {
 }
 
 func fetchApiToken() {
-	cookieStore = sessions.NewCookieStore([]byte(cookieSecret))
 	gob.Register(&oauth2.Token{})
 
 	log.Debug("fetching Twitch API token from ", TWITCH_TOKEN_URL)
@@ -73,6 +72,7 @@ func fetchApiToken() {
 		"Content-Type": {"application/json"},
 	}
 
+	log.Debug(base.String())
 	responseData, err := apiClient.Post(base.String(), nil, headers)
 	if err != nil {
 		return
@@ -113,6 +113,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Debug("Redirecting")
 	http.Redirect(w, r, oauth2Config.AuthCodeURL(state), http.StatusTemporaryRedirect)
 
 	return
@@ -123,14 +124,14 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 	session, err := cookieStore.Get(r, oauthSessionName)
 	if err != nil {
-		log.Error("corrupted session %s -- generated new", err)
+		log.Printf("corrupted session %s -- generated new", err)
 		err = nil
 	}
 
 	// ensure we flush the csrf challenge even if the request is ultimately unsuccessful
 	defer func() {
 		if err := session.Save(r, w); err != nil {
-			log.Error("error saving session: %s", err)
+			log.Printf("error saving session: %s", err)
 		}
 	}()
 
@@ -142,7 +143,7 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		log.Error("error validating state: %s", err)
+		log.Error("error validating state", err)
 		return
 	}
 
@@ -153,14 +154,18 @@ func HandleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// add the oauth token to session
-	session.Values[oauthTokenKey] = token
+	session.Values[oauthTokenKey] = token.AccessToken
 
-	log.Debug("Access token: %s\n", token.AccessToken)
+
+	log.Debug("Access token\n", token.AccessToken)
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+
 	return
 }
 
 func initOAuth() {
 	// Gob encoding for gorilla/sessions
+	cookieStore = sessions.NewCookieStore([]byte(cookieSecret))
 	oauth2Config = &oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
