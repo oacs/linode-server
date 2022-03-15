@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "Switching to branch master"
+git checkout master
+
+echo "Building app"
+go build -o app

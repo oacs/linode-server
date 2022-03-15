@@ -1,0 +1,37 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/golang:1.15.8
+    steps: 
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: go mod download
+      - save_cache:
+          key: go-mod-v4-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - add_ssh_keys 
+      - checkout
+      - run: 
+          name: Add ssh known host 
+          command: ssh-keyscan -H 139.162.163.143 >> ~/.ssh/known_hosts 
+      - run: 
+          name: Deploy app 
+          command: ssh root@139.162.163.143 ./deploy
+
+workflows:
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - main
+         
+
