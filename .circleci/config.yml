@@ -28,7 +28,10 @@ jobs:
 workflows:
   build:
     jobs:
-      - build
-    filters:
-          branches:
-            only: main
+      - build:
+          filters:
+            branches:
+              only:
+                - main
+         
+
