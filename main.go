@@ -11,9 +11,11 @@ import (
 func main() {
 	args := os.Args
 	envDir := ".env"
+	env := "dev"
 	if len(args) > 1 {
 		if args[1] == "--prod" {
 			envDir = "/home/www/.env"
+			env = "prod"
 		}
 	}
 
@@ -21,5 +23,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	server.Main()
+
+	server := server.NewServer("/api", env)
+	server.Start()
 }
